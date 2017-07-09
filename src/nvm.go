@@ -628,7 +628,7 @@ func use(version string, cpuarch string, reload ...bool) {
 	// Create new symlink
 	var ok bool
 	// ok, err = runElevated(fmt.Sprintf(`"%s" cmd /C mklink /D "%s" "%s"`, filepath.Join(env.root, "elevate.cmd"), filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version)))
-	ok, err = elevatedRun("mklink", "/D", filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version))
+	ok, err = elevatedRun("mklink", "/J", filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version))
 	if err != nil {
 		if strings.Contains(err.Error(), "not have sufficient privilege") || strings.Contains(strings.ToLower(err.Error()), "access is denied") {
 			// cmd := exec.Command(filepath.Join(env.root, "elevate.cmd"), "cmd", "/C", "mklink", "/D", filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version))
@@ -637,7 +637,7 @@ func use(version string, cpuarch string, reload ...bool) {
 			// cmd.Stdout = &output
 			// cmd.Stderr = &_stderr
 			// perr := cmd.Run()
-			ok, err = elevatedRun("mklink", "/D", filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version))
+			ok, err = elevatedRun("mklink", "/J", filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version))
 
 			if err != nil {
 				ok = false
