@@ -447,7 +447,7 @@ func uninstall(version string) {
 		fmt.Printf("Uninstalling node v" + version + "...")
 		v, _ := node.GetCurrentVersion()
 		if v == version {
-			_, err := runElevated(fmt.Sprintf(`"%s" cmd /C rmdir "%s"`, filepath.Join(env.root, "elevate.cmd"), filepath.Clean(env.symlink)))
+			_, err := runElevated(fmt.Sprintf(`cmd /C rmdir "%s"`, filepath.Clean(env.symlink)))
 			if err != nil {
 				fmt.Println(fmt.Sprint(err))
 				return
@@ -530,7 +530,7 @@ func use(version string, cpuarch string, reload ...bool) {
 	// Remove symlink if it already exists
 	sym, _ := os.Stat(env.symlink)
 	if sym != nil {
-		_, err := runElevated(fmt.Sprintf(`"%s" cmd /C rmdir "%s"`, filepath.Join(env.root, "elevate.cmd"), filepath.Clean(env.symlink)))
+		_, err := runElevated(fmt.Sprintf(`cmd /C rmdir "%s"`, filepath.Clean(env.symlink)))
 		if err != nil {
 			fmt.Println(fmt.Sprint(err))
 		}
@@ -544,10 +544,10 @@ func use(version string, cpuarch string, reload ...bool) {
 
 	// Create new symlink
 	var ok bool
-	ok, err = runElevated(fmt.Sprintf(`"%s" cmd /C mklink /D "%s" "%s"`, filepath.Join(env.root, "elevate.cmd"), filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version)))
+	ok, err = runElevated(fmt.Sprintf(`cmd /C mklink /J "%s" "%s"`, filepath.Clean(env.symlink), filepath.Join(env.root, "v"+version)))
 	if err != nil {
 		if strings.Contains(err.Error(), "file already exists") {
-			ok, err = runElevated(fmt.Sprintf(`"%s" cmd /C rmdir "%s"`, filepath.Join(env.root, "elevate.cmd"), filepath.Clean(env.symlink)))
+			ok, err = runElevated(fmt.Sprintf(`cmd /C rmdir "%s"`, filepath.Clean(env.symlink)))
 			reloadable := true
 			if len(reload) > 0 {
 				reloadable = reload[0]
@@ -714,7 +714,7 @@ func enable() {
 }
 
 func disable() {
-	ok, err := runElevated(fmt.Sprintf(`"%s" cmd /C rmdir "%s"`, filepath.Join(env.root, "elevate.cmd"), filepath.Clean(env.symlink)))
+	ok, err := runElevated(fmt.Sprintf(`cmd /C rmdir "%s"`, filepath.Clean(env.symlink)))
 	if !ok {
 		return
 	}
